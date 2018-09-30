@@ -3,6 +3,16 @@
   <PropertyGroup>
     <TargetFramework>netstandard2.0</TargetFramework>
     <RootNamespace>TencentyunCos_dotnetStandard_sdk_v2._0</RootNamespace>
+    <Description>腾讯云存储COS,.NETStandard2.0版本
+支持.NETFramework4.6及以上
+非官方</Description>
+    <Copyright />
+    <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
+    <PackageRequireLicenseAcceptance>true</PackageRequireLicenseAcceptance>
+    <PackageIconUrl>https://imgcache.qq.com/open_proj/proj_qcloud_v2/gateway/portal/css/img/nav/logo-bg-color.svg</PackageIconUrl>
+    <PackageProjectUrl>https://github.com/liuyl1992/TencentyunCos-dotnetStandard-sdk-v2.0</PackageProjectUrl>
+    <NeutralLanguage>zh-Hans</NeutralLanguage>
+    <PackageLicenseUrl>https://github.com/liuyl1992/TencentyunCos-dotnetStandard-sdk-v2.0</PackageLicenseUrl>
   </PropertyGroup>
   <ItemGroup>
     <PackageReference Include="Newtonsoft.Json" Version="11.0.2" />
