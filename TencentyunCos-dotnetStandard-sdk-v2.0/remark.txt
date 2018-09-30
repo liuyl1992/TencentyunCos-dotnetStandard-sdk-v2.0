@@ -8,4 +8,4 @@
 
 
 说明：
-C#类库建议都用.NETStandard类型。达到代码共享。
+C#类库建议都用.NETStandard类型。达到代码共享。 
