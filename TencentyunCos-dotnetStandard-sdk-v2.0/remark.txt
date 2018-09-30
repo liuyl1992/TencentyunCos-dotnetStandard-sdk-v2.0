@@ -1,0 +1,11 @@
+﻿腾讯云对象存储服务COS
+本库在.NETStandard2.0版本上构建
+支持：
+.NETFramework4.6及以上
+.NetCore2.0及以上
+.NetStandard及以上
+
+
+
+说明：
+C#类库建议都用.NETStandard类型。达到代码共享。
