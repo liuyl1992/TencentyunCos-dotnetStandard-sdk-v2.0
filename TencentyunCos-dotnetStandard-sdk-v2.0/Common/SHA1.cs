@@ -33,6 +33,6 @@ namespace QCloud.CosApi.Common
             }
             return strResult;
         }
-        
+
     }
 }

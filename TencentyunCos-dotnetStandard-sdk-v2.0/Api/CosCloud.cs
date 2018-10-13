@@ -311,6 +311,8 @@ namespace QCloud.CosApi.Api
             }
 
             var fileSize = new FileInfo(localPath).Length;
+
+
             if (fileSize <= SLICE_UPLOAD_FILE_SIZE)
             {
                 return Upload(bucketName, remotePath, localPath, bizAttribute, insertOnly);
@@ -479,50 +481,49 @@ namespace QCloud.CosApi.Api
                 long offset = 0;    //文件的偏移
                 long totalLen = 0;  //总共读取的字节数
                 int readLen = 0;
-                var fileInfo = new FileInfo(localPath);
-                var fileStream = new FileStream(localPath, FileMode.Open, FileAccess.Read);
-                CosSha1Pure sha = new CosSha1Pure();
-                StringBuilder jsonStr = new StringBuilder();
-
-                jsonStr.Append("[");
-
-                for (int i = 0; offset < fileInfo.Length; ++i, offset += readLen)
+                using (var fileStream = new FileStream(localPath, FileMode.Open, FileAccess.Read))
                 {
-                    fileStream.Seek(offset, SeekOrigin.Begin);
-                    readLen = fileStream.Read(buffer, 0, sliceSize);
-                    totalLen += readLen;
-                    string dataSha;
+                    CosSha1Pure sha = new CosSha1Pure();
+                    StringBuilder jsonStr = new StringBuilder();
 
-                    sha.HashCore(buffer, 0, readLen);
-                    if ((readLen < sliceSize) || (readLen == sliceSize && totalLen == fileInfo.Length))
+                    jsonStr.Append("[");
+
+                    for (int i = 0; offset < fileStream.Length; ++i, offset += readLen)
                     {
-                        //最后一片
-                        dataSha = sha.FinalHex();
-                    }
-                    else
-                    {
-                        //中间的分片
-                        dataSha = sha.GetDigest();
+                        fileStream.Seek(offset, SeekOrigin.Begin);
+                        readLen = fileStream.Read(buffer, 0, sliceSize);
+                        totalLen += readLen;
+                        string dataSha;
+
+                        sha.HashCore(buffer, 0, readLen);
+                        if ((readLen < sliceSize) || (readLen == sliceSize && totalLen == fileStream.Length))
+                        {
+                            //最后一片
+                            dataSha = sha.FinalHex();
+                        }
+                        else
+                        {
+                            //中间的分片
+                            dataSha = sha.GetDigest();
+                        }
+
+                        if (i != 0)
+                        {
+                            jsonStr.Append(",{\"offset\":" + offset + "," +
+                                           "\"datalen\":" + readLen + "," +
+                                           "\"datasha\":\"" + dataSha + "\"}");
+                        }
+                        else
+                        {
+                            jsonStr.Append("{\"offset\":" + offset + "," +
+                                           "\"datalen\":" + readLen + "," +
+                                           "\"datasha\":\"" + dataSha + "\"}");
+                        }
                     }
 
-                    if (i != 0)
-                    {
-                        jsonStr.Append(",{\"offset\":" + offset + "," +
-                                       "\"datalen\":" + readLen + "," +
-                                       "\"datasha\":\"" + dataSha + "\"}");
-                    }
-                    else
-                    {
-                        jsonStr.Append("{\"offset\":" + offset + "," +
-                                       "\"datalen\":" + readLen + "," +
-                                       "\"datasha\":\"" + dataSha + "\"}");
-                    }
+                    jsonStr.Append("]");
+                    return jsonStr.ToString();
                 }
-
-
-                jsonStr.Append("]");
-                return jsonStr.ToString();
-
             }
             catch (Exception ex)
             {
@@ -957,6 +958,7 @@ namespace QCloud.CosApi.Api
         private string generateURL(string bucketName, string remotePath)
         {
             string url = "http://" + this.region + ".file.myqcloud.com/files/v2/" + this.appId + "/" + bucketName + HttpUtils.EncodeRemotePath(remotePath);
+            //string url = "http://" + bucketName + ".cos." + this.region + ".myqcloud.com/"  + HttpUtils.EncodeRemotePath(remotePath);
             return url;
         }
 
@@ -967,6 +969,7 @@ namespace QCloud.CosApi.Api
         private string generateURL(string bucketName, string remotePath, string prefix)
         {
             string url = "http://" + this.region + ".file.myqcloud.com/files/v2/" + this.appId + "/" + bucketName + HttpUtils.EncodeRemotePath(remotePath) + HttpUtility.UrlEncode(prefix);
+            //string url = "http://" + bucketName + ".cos." + this.region + ".myqcloud.com/" + HttpUtils.EncodeRemotePath(remotePath) + HttpUtility.UrlEncode(prefix);
             return url;
         }
 

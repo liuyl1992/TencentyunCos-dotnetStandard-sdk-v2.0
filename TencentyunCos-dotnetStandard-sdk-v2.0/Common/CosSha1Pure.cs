@@ -28,17 +28,17 @@ namespace QCloud.CosApi.Common
         public string GetDigest()
         {
             StringBuilder digest = new StringBuilder();
-            for(int i = 0; i < _H.Length; ++i)
-            {       
+            for (int i = 0; i < _H.Length; ++i)
+            {
                 byte[] digestByte = System.BitConverter.GetBytes(_H[i]);
                 for (int j = 0; j < digestByte.Length; ++j)
                 {
                     digest.Append(digestByte[j].ToString("x2"));
                 }
-                
+
 
             }
-                     
+
             return digest.ToString();
         }
 
@@ -46,7 +46,7 @@ namespace QCloud.CosApi.Common
         {
             StringBuilder sha1Hex = new StringBuilder();
             byte[] sha1Binary = HashFinal();
-            for ( int i = 0; i < sha1Binary.Length; ++i)
+            for (int i = 0; i < sha1Binary.Length; ++i)
             {
                 sha1Hex.Append(sha1Binary[i].ToString("x2"));
             }
